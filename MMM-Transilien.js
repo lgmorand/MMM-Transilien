@@ -1,0 +1,98 @@
+/* Timetable for Paris local transport Module */
+/* Magic Mirror
+ * Module: MMM-Ratp
+ *
+ * By Louis-Guillaume MORAND
+ * based on a script from Benjamin Angst http://www.beny.ch and Georg Peters (https://lane6.de)
+ * MIT Licensed.
+ */
+Module.register("MMM-Transilien", {
+
+    transports: [],
+    lineInfo: "",
+
+    // Define module defaults
+    defaults: {
+        useRealtime: true,
+        updateInterval: 1 * 60 * 1000, // Update 30 secs
+        animationSpeed: 2000,
+        debugging: true,
+        retryDelay: 1 * 10 * 1000,
+        initialLoadDelay: 0, // start delay seconds.
+    },
+
+    // Define start sequence.
+    start: function() {
+        Log.info("Starting module: " + this.name);
+        if (this.config.debugging) Log.info("DEBUG mode activated");
+        this.sendSocketNotification('CONFIG', this.config);
+        this.loaded = false;
+        this.updateTimer = null;
+    },
+
+    // Override dom generator.
+    getDom: function() {
+        var wrapper = document.createElement("div");
+
+        if (!this.loaded) {
+            wrapper.innerHTML = "Loading next trains...";
+            wrapper.className = "dimmed light small";
+            return wrapper;
+        }
+
+        var table = document.createElement("table");
+        table.className = "small";
+
+        // creating title of the timetable
+        var rowtitle = document.createElement("th");
+        var title = document.createElement("td");
+        title.innerHTML = this.lineInfo;
+        title.colSpan=2;
+        title.className = "align-right"
+        rowtitle.appendChild(title);
+        table.appendChild(rowtitle);
+
+        // adding next schedules
+        for (var t in this.transports) {
+            var transports = this.transports[t];
+
+            var row = document.createElement("tr");
+
+            var transportNameCell = document.createElement("td");
+            var content = ""
+            if(transports.state !== undefined )
+            {
+                content = "<span style='color:red'>" + transports.state +"</span> &nbsp;&nsbp;" +transports.name;
+            }
+            else
+            {
+                content = transports.name;
+            }
+
+            content = content + "&nbsp;&nbsp;&nbsp;&nbsp;" + transports.date;
+            transportNameCell.innerHTML = content;
+            transportNameCell.className = "align-right bright";
+            row.appendChild(transportNameCell);
+
+            table.appendChild(row);
+        }
+
+        return table;
+    },
+
+    // using the results retrieved for the API call
+    socketNotificationReceived: function(notification, payload) {
+        Log.info("Notif:" + notification);
+        if (notification === "TRAINS") {
+            if (this.config.debugging) {
+                Log.info("Trains received");
+                Log.info(payload.lineInfo);
+                Log.info(payload.transports);
+            }
+            this.transports = payload.transports;
+            this.lineInfo = payload.lineInfo;
+            this.loaded = true;
+            this.updateDom(this.config.animationSpeed);
+        }
+    }
+});

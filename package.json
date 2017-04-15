@@ -1,0 +1,31 @@
+{
+  "name": "MMM-Transilien",
+  "version": "0.1.0",
+  "description": "Local transport in Paris (France) module for MagicMirror",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lgmorand/MMM-Transilien"
+  },
+  "keywords": [
+    "magic mirror",
+    "smart mirror",
+    "localtransport",
+    "module",
+    "ratp",
+    "paris",
+    "transilien",
+    "train"
+  ],
+  "author": "Louis-Guillaume MORAND",
+  "contributors": "https://github.com/lgmorand/MMM-Transilien/graphs/contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lgmorand/MMM-Transilien/issues"
+  },
+  "homepage": "https://github.com/lgmorand/MMM-Transilien#readme",
+  "dependencies": {
+    "unirest": "latest",
+    "node-forge": "latest",
+    "xml2js":"latest"
+    }
+}
