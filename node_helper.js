@@ -3,7 +3,6 @@
  * Module: MMM-Ratp
  *
  * By Louis-Guillaume MORAND
- * based on a script from Benjamin Angst http://www.beny.ch and Georg Peters (https://lane6.de)
  * MIT Licensed.
  */
 const NodeHelper = require("node_helper");
@@ -24,19 +23,19 @@ module.exports = NodeHelper.create({
      */
     updateTimetable: function() {
         var url = "http://api.transilien.com/gare/"+ this.config.departUIC + "/depart/"+ this.config.arriveeUIC;
-        console.log(url);
+        console.log("\r\nURL loaded for transilien:"+url);
         var self = this;
         var retry = false;
-
 
         // calling this API
         var request = unirest.get(url);
         request.auth({
-            user: 'tnhtn613',
-            pass: '4i2xsTN7',
+            user: this.config.login,
+            pass: this.config.password,
             sendImmediately: true
         });
-        // from the documentation of the api, it'll will mandatory in next version of the api
+
+        // from the documentation of the api, it'll be mandatory in next version of the api
         request.headers({'Accept': 'application/vnd.sncf.transilien.od.depart+xml;vers=1.0'});
         request.end(function(r) {
                 if (r.error) {
@@ -63,42 +62,49 @@ module.exports = NodeHelper.create({
         // console.log("-------------------------- XML RECEIVED-----------------------------------------\r\n");
         // console.log(data);
         
-        // console.log(data.response);
         // we convert it to json to be easier to parse
         var responseInJson = null;
         xml2js.parseString(data, { ignoreAttrs : true }, function (err, result) {
                             responseInJson = result;
         });
 
-         console.log("---------------------------- XML TRANSFORMED TO JSON---------------------------------------\r\n");
-         console.log(responseInJson);
+        //  console.log("---------------------------- XML TRANSFORMED TO JSON---------------------------------------\r\n");
+        //  console.log(responseInJson);
 
-        this.lineInfo = "Prochains trains en gare de " + this.config.depart + " vers " + this.config.arrivee;
-        for (var i = 0, count = responseInJson.passages.train.length; i < 5 /*count*/; i++) {
+        // we don't want to return too much trains
+        var count = this.config.trainsdisplayed;
+        if(responseInJson.passages.train.length < count)
+        {
+            count = responseInJson.passages.train.length;
+        }
+
+        for (var i = 0; i < count; i++) {
 
             var nextTrain = responseInJson.passages.train[i];
 
-            var _date = '' + nextTrain.date;
+            if(nextTrain !== undefined)
+            {
+                var _date = '' + nextTrain.date;
 
-            this.transports.push({
-                name: nextTrain.miss,
-                date: _date.substring(_date.lastIndexOf(" ")+1),
-                mode: nextTrain.date.mode,
-                state: nextTrain.etat
-            });
+                this.transports.push({
+                    name: nextTrain.miss,
+                    date: _date.substring(_date.lastIndexOf(" ")+1),
+                    mode: nextTrain.date.mode,
+                    state: nextTrain.etat
+                });
+            }
         }
 
         this.loaded = true;
         this.sendSocketNotification("TRAINS", {
-            transports: this.transports,
-            lineInfo: this.lineInfo
+            transports: this.transports
         });
     },
 
 
     /* scheduleUpdate()
      * Schedule next update.
-     * argument delay number - Millis econds before next update. If empty, this.config.updateInterval is used.
+     * argument delay number - Milliseconds before next update. If empty, this.config.updateInterval is used.
      */
     scheduleUpdate: function(delay) {
         var nextLoad = this.config.updateInterval;

@@ -9,16 +9,22 @@
 Module.register("MMM-Transilien", {
 
     transports: [],
-    lineInfo: "",
 
     // Define module defaults
     defaults: {
         useRealtime: true,
-        updateInterval: 1 * 60 * 1000, // Update 30 secs
+        updateInterval: 1 * 10 * 1000, // Update 30 secs
         animationSpeed: 2000,
         debugging: true,
+        header:"transilien",
         retryDelay: 1 * 10 * 1000,
         initialLoadDelay: 0, // start delay seconds.
+        trainsdisplayed:3, // number of trains displayed
+    },
+
+// Define required scripts.
+    getStyles: function() {
+        return [this.file("css/MMM-Transilien.css")];
     },
 
     // Define start sequence.
@@ -41,16 +47,7 @@ Module.register("MMM-Transilien", {
         }
 
         var table = document.createElement("table");
-        table.className = "small";
-
-        // creating title of the timetable
-        var rowtitle = document.createElement("th");
-        var title = document.createElement("td");
-        title.innerHTML = this.lineInfo;
-        title.colSpan=2;
-        title.className = "align-right"
-        rowtitle.appendChild(title);
-        table.appendChild(rowtitle);
+        table.className = "small transilien";
 
         // adding next schedules
         for (var t in this.transports) {
@@ -62,11 +59,11 @@ Module.register("MMM-Transilien", {
             var content = ""
             if(transports.state !== undefined )
             {
-                content = "<span style='color:red'>" + transports.state +"</span> &nbsp;&nsbp;" +transports.name;
+                content = "<span class='state'><i class='fa fa-clock-o aria-hidden='true'></i> " + transports.state +"</span> &nbsp;&nbsp; <span class='trainname'>" +transports.name +"</span>";
             }
             else
             {
-                content = transports.name;
+                content = "<span class='trainname'>" +transports.name +"</span>";
             }
 
             content = content + "&nbsp;&nbsp;&nbsp;&nbsp;" + transports.date;
@@ -86,11 +83,9 @@ Module.register("MMM-Transilien", {
         if (notification === "TRAINS") {
             if (this.config.debugging) {
                 Log.info("Trains received");
-                Log.info(payload.lineInfo);
                 Log.info(payload.transports);
             }
             this.transports = payload.transports;
-            this.lineInfo = payload.lineInfo;
             this.loaded = true;
             this.updateDom(this.config.animationSpeed);
         }
