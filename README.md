@@ -11,7 +11,7 @@ A law was voted to force public companies to open some of their data to the publ
 More info about the [api](https://ressources.data.sncf.com/explore/dataset/api-temps-reel-transilien/)
 
 **VERY IMPORTANT**
-They sucks at RATP and they force you to ask for a key to use the API. For that, you need to ask them a key by email (see link above), once you write a mail, you MAY receive a key after several days or weeks (because they really really suck...). It may change in the future but for now they clearly do that to prevent user to easily access to their API.
+They sucks at SNCF and they force you to ask for a key to use the API. For that, you need to ask them a key by email (see link above), once you write a mail, you MAY receive a key after several days or weeks (because they really really suck...). It may change in the future but for now they clearly do that to prevent user to easily access to their API.
 
 ## Installation
 
@@ -31,7 +31,7 @@ Clone the git in the /modules folder of Magic Mirror and run the "npm install" c
     config:{
         departUIC:"87382200",
         arriveeUIC:"87384008",
-        login:"",
+        login:"", // You must add your API login and password
         password:""
     }
 },
