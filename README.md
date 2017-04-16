@@ -27,7 +27,7 @@ Clone the git in the /modules folder of Magic Mirror and run the "npm install" c
 {
     module: 'MMM-Transilien',
     position: 'top_right',
-    header:'Courbevoie vers St Lazare'
+    header:'Courbevoie vers St Lazare',
     config:{
         departUIC:"87382200",
         arriveeUIC:"87384008",
