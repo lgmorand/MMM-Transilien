@@ -15,7 +15,8 @@ module.exports = NodeHelper.create({
     updateTimer: "",
     start: function() {
         this.started = false;
-        console.log("MMM-Transilien- NodeHelper started");
+        console.log("\r\nMMM-Transilien- NodeHelper started");
+        // console.log("\r\nMMM-Transilien- Debug mode enabled: "+this.config.debugging +"\r\n");
     },
 
     /* updateTimetable(transports)
@@ -23,7 +24,7 @@ module.exports = NodeHelper.create({
      */
     updateTimetable: function() {
         var url = "http://api.transilien.com/gare/"+ this.config.departUIC + "/depart/"+ this.config.arriveeUIC;
-        console.log("\r\nURL loaded for transilien:"+url);
+        if (this.config.debugging) console.log("\r\nURL loaded for transilien:"+url);
         var self = this;
         var retry = false;
 

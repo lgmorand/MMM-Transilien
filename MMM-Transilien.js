@@ -13,9 +13,9 @@ Module.register("MMM-Transilien", {
     // Define module defaults
     defaults: {
         useRealtime: true,
-        updateInterval: 1 * 10 * 1000, // Update 30 secs
+        updateInterval: 1 * 60 * 1000, // Update 30 secs
         animationSpeed: 2000,
-        debugging: true,
+        debugging: false,
         header:"transilien",
         retryDelay: 1 * 10 * 1000,
         initialLoadDelay: 0, // start delay seconds.
