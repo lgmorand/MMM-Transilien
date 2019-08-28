@@ -23,7 +23,7 @@ module.exports = NodeHelper.create({
      * Calls processTransports on succesfull response.
      */
     updateTimetable: function () {
-        var url = "https://api.transilien.com/gare/" + this.config.departUIC + "/arrivee/" + this.config.arriveeUIC;
+        var url = "https://api.transilien.com/gare/" + this.config.departUIC + "/depart/" + this.config.arriveeUIC;
         if (this.config.debugging) console.log("\r\nURL loaded for transilien:" + url);
         var self = this;
         var retry = false;
