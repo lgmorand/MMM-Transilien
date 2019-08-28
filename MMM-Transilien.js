@@ -13,22 +13,22 @@ Module.register("MMM-Transilien", {
     // Define module defaults
     defaults: {
         useRealtime: true,
-        updateInterval: 1 * 60 * 1000, // Update 30 secs
+        updateInterval: 1 * 10 * 1000, // Update every 10 secs
         animationSpeed: 2000,
         debugging: false,
-        header:"transilien",
+        header: "transilien",
         retryDelay: 1 * 10 * 1000,
         initialLoadDelay: 0, // start delay seconds.
-        trainsdisplayed:3, // number of trains displayed
+        trainsdisplayed: 3, // number of trains displayed
     },
 
-// Define required scripts.
-    getStyles: function() {
+    // Define required scripts.
+    getStyles: function () {
         return [this.file("css/MMM-Transilien.css")];
     },
 
     // Define start sequence.
-    start: function() {
+    start: function () {
         Log.info("Starting module: " + this.name);
         if (this.config.debugging) Log.info("DEBUG mode activated");
         this.sendSocketNotification('CONFIG', this.config);
@@ -37,7 +37,7 @@ Module.register("MMM-Transilien", {
     },
 
     // Override dom generator.
-    getDom: function() {
+    getDom: function () {
         var wrapper = document.createElement("div");
 
         if (!this.loaded) {
@@ -57,13 +57,11 @@ Module.register("MMM-Transilien", {
 
             var transportNameCell = document.createElement("td");
             var content = ""
-            if(transports.state !== undefined )
-            {
-                content = "<span class='state'><i class='fa fa-clock-o aria-hidden='true'></i> " + transports.state +"</span> &nbsp;&nbsp; <span class='trainname'>" +transports.name +"</span>";
+            if (transports.state !== undefined) {
+                content = "<span class='state'><i class='fa fa-clock-o aria-hidden='true'></i> " + transports.state + "</span> &nbsp;&nbsp; <span class='trainname'>" + transports.name + "</span>";
             }
-            else
-            {
-                content = "<span class='trainname'>" +transports.name +"</span>";
+            else {
+                content = "<span class='trainname'>" + transports.name + "</span>";
             }
 
             content = content + "&nbsp;&nbsp;&nbsp;&nbsp;" + transports.date;
@@ -78,7 +76,7 @@ Module.register("MMM-Transilien", {
     },
 
     // using the results retrieved for the API call
-    socketNotificationReceived: function(notification, payload) {
+    socketNotificationReceived: function (notification, payload) {
         Log.info("Notif:" + notification);
         if (notification === "TRAINS") {
             if (this.config.debugging) {
